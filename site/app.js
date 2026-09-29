@@ -68,3 +68,28 @@ function showTerminalRipple(e,keyboard=false){
 // Capture the initial touch before navigation or UI replacement occurs.
 document.addEventListener('pointerdown',e=>showTerminalRipple(e),{capture:true,passive:true});
 document.addEventListener('click',e=>{if(e.detail===0)showTerminalRipple(e,true)},{capture:true});
+
+const treeTransitions=new WeakMap();
+container.addEventListener('click',e=>{
+ const summary=e.target.closest('.tree summary');if(!summary)return;
+ const details=summary.parentElement;
+ const branch=details.querySelector(':scope > .branch');if(!branch)return;
+ e.preventDefault();
+ const previous=treeTransitions.get(details);
+ const opening=previous?!previous.opening:!details.open;
+ const currentHeight=details.open?branch.getBoundingClientRect().height:0;
+ previous?.animation.cancel();
+ if(motionPreference.matches){details.open=opening;branch.style.removeProperty('overflow');treeTransitions.delete(details);return;}
+ details.open=true;
+ branch.style.overflow='hidden';
+ const fullHeight=branch.scrollHeight;
+ const animation=branch.animate([
+  {height:currentHeight+'px',opacity:currentHeight?1:0,transform:currentHeight?'translateX(0)':'translateX(-6px)'},
+  {height:(opening?fullHeight:0)+'px',opacity:opening?1:0,transform:opening?'translateX(0)':'translateX(-6px)'}
+ ],{duration:360,easing:'cubic-bezier(.2,.7,.2,1)',fill:'both'});
+ const transition={animation,opening};treeTransitions.set(details,transition);
+ animation.finished.then(()=>{
+  if(treeTransitions.get(details)!==transition)return;
+  details.open=opening;animation.cancel();branch.style.removeProperty('overflow');treeTransitions.delete(details);
+ }).catch(()=>{});
+},{capture:true});

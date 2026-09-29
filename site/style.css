@@ -81,3 +81,6 @@ details[open]>.branch{animation:terminal-reveal .3s ease both}
  .tree-key{animation:terminal-reveal .45s ease both}.tree-key:nth-of-type(2){animation-delay:.08s}.tree-key:nth-of-type(3){animation-delay:.16s}.tree-key:nth-of-type(4){animation-delay:.24s}
 }
 @media(pointer:coarse) and (prefers-reduced-motion:no-preference){.terminal-ripple{width:32px;height:32px;border-width:3px}}
+
+/* Height is animated by the tree controller in both directions. */
+.tree details[open]>.branch{animation:none}
