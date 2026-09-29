@@ -18,3 +18,27 @@ details[open]>.branch{animation:terminal-reveal .3s ease both}
 @keyframes terminal-reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes terminal-bar{from{transform:scale(0)}to{transform:scale(1)}}
 }
+
+/* Keep intrinsic calendar width inside its scroller, never in the page grid. */
+#app,.shell,.grid>*,.rom-layout>*,.panel-body,.intro>*,.commit>*,.device-summary>*{min-width:0}
+.grid,.rom-layout,.metrics{width:100%}
+.calendar-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.subtitle,.fetch-message,.footer,.commit-info,.device-summary small{overflow-wrap:anywhere}
+@media(max-width:760px){
+ .grid,.rom-layout{grid-template-columns:minmax(0,1fr)}
+ .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .intro{display:block}.intro h1{font-size:clamp(2.6rem,11vw,3.4rem)}
+ .panel-head{flex-wrap:wrap;gap:8px}.panel-head h2{font-size:.9rem}.panel-head .mono{font-size:.6875rem}
+ .metric{padding:15px 13px}.metric .label{font-size:.8125rem;gap:5px;line-height:1.5}.metric small{display:block;line-height:1.65}
+ .periods{gap:2px}.periods button{min-height:44px;padding:8px 10px}.right-tools button{min-height:44px}
+ .chart{height:auto;aspect-ratio:640/210}
+ .release{align-items:flex-start;flex-direction:column}.release .download-label{align-self:flex-end}
+ .branch{padding-left:12px;margin-left:3px}.tree{padding-left:12px;padding-right:12px}
+ .device-summary{gap:12px}.device-summary h2{font-size:1.75rem}
+ .calendar-scroll{scrollbar-width:thin;scrollbar-color:var(--green) var(--bg)}
+}
+@media(max-width:360px){
+ .shell{padding:18px 12px}.topbar{padding-left:12px;padding-right:12px}
+ .panel-body,.panel-head{padding:14px}.periods button{padding:8px}.right-tools{gap:6px}.right-tools button{padding:10px}
+ .languages{grid-template-columns:minmax(0,1fr)}
+}
