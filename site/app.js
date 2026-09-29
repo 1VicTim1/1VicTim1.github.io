@@ -39,3 +39,25 @@ function enhanceMotion(){
 }
 const motionObserver=new MutationObserver(enhanceMotion);
 motionObserver.observe(container,{childList:true,subtree:true});enhanceMotion();
+
+const motionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
+function enhanceTerminal(){
+ if(motionPreference.matches)return;
+ container.querySelectorAll('.heatmap .cell').forEach((el,i)=>el.style.setProperty('--cell-delay',Math.floor(i/7)*12+'ms'));
+ container.querySelectorAll('.chart rect').forEach((el,i)=>el.style.setProperty('--chart-delay',i*35+'ms'));
+ container.querySelectorAll('.commit,.repo').forEach((el,i)=>el.style.setProperty('--row-delay',Math.min(i,10)*45+'ms'));
+}
+const terminalObserver=new MutationObserver(enhanceTerminal);
+terminalObserver.observe(container,{childList:true,subtree:true});enhanceTerminal();
+let spotlightFrame=0;
+container.addEventListener('pointermove',e=>{
+ if(motionPreference.matches||e.pointerType!=='mouse'||spotlightFrame)return;
+ const panel=e.target.closest('.panel');if(!panel)return;
+ spotlightFrame=requestAnimationFrame(()=>{const rect=panel.getBoundingClientRect();panel.style.setProperty('--spot-x',e.clientX-rect.left+'px');panel.style.setProperty('--spot-y',e.clientY-rect.top+'px');spotlightFrame=0});
+});
+document.addEventListener('click',e=>{
+ if(motionPreference.matches||!e.target.closest('button,summary,.badge,.maintainer-badge'))return;
+ const ripple=document.createElement('span');ripple.className='terminal-ripple';ripple.setAttribute('aria-hidden','true');
+ ripple.style.left=e.clientX+'px';ripple.style.top=e.clientY+'px';document.body.append(ripple);
+ ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});setTimeout(()=>ripple.remove(),800);
+});

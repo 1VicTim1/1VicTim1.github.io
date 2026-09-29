@@ -44,3 +44,21 @@ details[open]>.branch{animation:terminal-reveal .3s ease both}
 }
 
 .maintainer-badge{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:fit-content;max-width:100%;margin-top:18px;padding:12px;border:1px solid #6b9c26;background:linear-gradient(110deg,#243714,#121c0c)}.maintainer-badge-status{background:var(--green);color:#142006;padding:7px 9px;font-size:.75rem;font-weight:600;white-space:nowrap}.maintainer-badge b{display:block;font-size:.875rem;font-weight:500}.maintainer-badge small{display:block;margin-top:5px;color:var(--muted);font-size:.75rem}
+
+/* Neon terminal interactions. */
+@media(prefers-reduced-motion:no-preference){
+ .panel{position:relative;isolation:isolate}.panel:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:0;background:radial-gradient(280px circle at var(--spot-x,50%) var(--spot-y,50%),#b1ff2515,transparent 70%);transition:opacity .25s}
+ .panel:hover:before{opacity:1}
+ .intro{position:relative;isolation:isolate;overflow:hidden}.intro:after{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#b1ff2570,transparent);box-shadow:0 0 16px #b1ff2540;pointer-events:none;animation:terminal-scan 1.8s ease-out both}
+ .brand:hover{animation:terminal-glitch .45s steps(2,end)}
+ .heatmap .cell{animation:terminal-cell .65s ease both;animation-delay:var(--cell-delay,0ms)}
+ .chart rect{animation-delay:var(--chart-delay,0ms)}
+ .commit,.repo{animation:terminal-reveal .5s ease both;animation-delay:var(--row-delay,0ms)}
+ .terminal-ripple{position:fixed;width:18px;height:18px;border:1px solid var(--green);border-radius:50%;pointer-events:none;z-index:999;transform:translate(-50%,-50%);box-shadow:0 0 15px #b1ff2550;animation:terminal-ripple .55s ease-out forwards}
+ .badge:hover b,.maintainer-badge:hover .maintainer-badge-status{box-shadow:0 0 22px #b1ff2555}
+ .periods button.selected{box-shadow:0 0 15px #b1ff2525;transition:box-shadow .2s}
+ @keyframes terminal-cell{0%{opacity:.15;transform:scale(.3)}60%{opacity:1;box-shadow:0 0 7px #b1ff2540}100%{opacity:1;transform:scale(1)}}
+ @keyframes terminal-scan{from{transform:translateY(0);opacity:0}20%{opacity:1}to{transform:translateY(180px);opacity:0}}
+ @keyframes terminal-glitch{0%,100%{transform:none;text-shadow:none}25%{transform:translateX(-2px);text-shadow:3px 0 #b1ff25,-2px 0 #e0f26a}50%{transform:translateX(2px);text-shadow:-3px 0 #b1ff25}75%{transform:translateX(-1px)}}
+ @keyframes terminal-ripple{to{transform:translate(-50%,-50%) scale(4);opacity:0}}
+}
