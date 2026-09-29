@@ -42,3 +42,5 @@ details[open]>.branch{animation:terminal-reveal .3s ease both}
  .panel-body,.panel-head{padding:14px}.periods button{padding:8px}.right-tools{gap:6px}.right-tools button{padding:10px}
  .languages{grid-template-columns:minmax(0,1fr)}
 }
+
+.maintainer-badge{display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:fit-content;max-width:100%;margin-top:18px;padding:12px;border:1px solid #6b9c26;background:linear-gradient(110deg,#243714,#121c0c)}.maintainer-badge-status{background:var(--green);color:#142006;padding:7px 9px;font-size:.75rem;font-weight:600;white-space:nowrap}.maintainer-badge b{display:block;font-size:.875rem;font-weight:500}.maintainer-badge small{display:block;margin-top:5px;color:var(--muted);font-size:.75rem}
