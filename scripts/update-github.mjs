@@ -1,0 +1,20 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+const config=JSON.parse(await readFile(new URL('../site/config.json',import.meta.url),'utf8'));
+const login=config.profile.username;
+if(!/^[a-z\d](?:[a-z\d-]{0,38})$/i.test(login))throw Error('Invalid GitHub username');
+const token=process.env.GH_STATS_TOKEN||process.env.GITHUB_TOKEN;
+const headers={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'victim-github-terminal',...(token?{Authorization:`Bearer ${token}`}:{})};
+async function api(path,options={}){const r=await fetch('https://api.github.com/'+path,{...options,headers:{...headers,...options.headers},signal:AbortSignal.timeout(30000)});if(!r.ok)throw Error(`GitHub HTTP ${r.status} for ${path.split('?')[0]}`);return r.json()}
+const days=Math.min(365,Math.max(1,config.github.historyDays||365));const since=new Date(Date.now()-days*86400000).toISOString();const warnings=[];
+const user=await api('users/'+login);
+let calendar=[],discovered=[];
+if(token){try{const result=await api('graphql',{method:'POST',body:JSON.stringify({query:`query($login:String!,$from:DateTime!,$to:DateTime!){user(login:$login){contributionsCollection(from:$from,to:$to){contributionCalendar{weeks{contributionDays{date contributionCount}}} commitContributionsByRepository(maxRepositories:100){repository{nameWithOwner isPrivate}}}}}`,variables:{login,from:since,to:new Date().toISOString()}})});if(result.errors)throw Error('Contribution calendar could not be read');const c=result.data.user.contributionsCollection;calendar=c.contributionCalendar.weeks;discovered=c.commitContributionsByRepository.filter(r=>!r.repository.isPrivate).map(r=>r.repository.nameWithOwner)}catch{warnings.push('Календарь вкладов недоступен: проверь разрешения GH_STATS_TOKEN. Остальная статистика обновлена.')}}else warnings.push('Без токена календарь вкладов недоступен.');
+const own=[];for(let page=1;page<=3;page++){const rows=await api(`users/${login}/repos?per_page=100&sort=pushed&page=${page}`);own.push(...rows);if(rows.length<100)break;if(page===3)warnings.push('Список собственных репозиториев ограничен 300 записями.')}
+const names=[...new Set([...(config.github.trackedRepositories||[]),...discovered,...own.map(r=>r.full_name)])].slice(0,60);
+if(names.some(n=>!/^[-\w.]+\/[-\w.]+$/.test(n)))throw Error('Invalid tracked repository');
+let commits=[],repositories=[];
+for(const name of names){try{const meta=own.find(r=>r.full_name===name)||await api('repos/'+name);if(meta.private){warnings.push(name+': приватный репозиторий пропущен.');continue}const languages=await api(`repos/${name}/languages`);repositories.push({name,url:meta.html_url,stars:meta.stargazers_count,forks:meta.forks_count,languages});for(let page=1;page<=10;page++){const rows=await api(`repos/${name}/commits?author=${encodeURIComponent(login)}&since=${encodeURIComponent(since)}&per_page=100&page=${page}`);for(const c of rows){if(c.author?.login?.toLowerCase()!==login.toLowerCase())continue;commits.push({repo:name,sha:c.sha,message:c.commit.message,date:c.commit.author.date,url:c.html_url})}if(rows.length<100)break;if(page===10)warnings.push(name+': ограничение 1000 коммитов.')}
+}catch(e){warnings.push(`${name}: ${e.message}`)}}
+const unique=[...new Map(commits.map(c=>[c.repo+':'+c.sha,c])).values()].sort((a,b)=>b.date.localeCompare(a.date));
+const snapshot={available:true,updatedAt:new Date().toISOString(),profile:{login:user.login,name:user.name,avatarUrl:user.avatar_url,followers:user.followers,publicRepos:user.public_repos},calendar,commits:unique,repositories,warnings,coverage:`${repositories.length} из ${names.length} репозиториев · последние ${days} дней · только публичные коммиты автора ${login} в основных ветках. Календарь включает все публичные типы вкладов. Лимит: 60 репозиториев, 1000 коммитов на репозиторий.`};
+await mkdir(new URL('../site/data/',import.meta.url),{recursive:true});await writeFile(new URL('../site/data/github.json',import.meta.url),JSON.stringify(snapshot,null,2)+'\n');console.log(`Collected ${unique.length} commits in ${repositories.length} repositories; ${warnings.length} warnings.`);
