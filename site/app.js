@@ -55,9 +55,16 @@ container.addEventListener('pointermove',e=>{
  const panel=e.target.closest('.panel');if(!panel)return;
  spotlightFrame=requestAnimationFrame(()=>{const rect=panel.getBoundingClientRect();panel.style.setProperty('--spot-x',e.clientX-rect.left+'px');panel.style.setProperty('--spot-y',e.clientY-rect.top+'px');spotlightFrame=0});
 });
-document.addEventListener('click',e=>{
- if(motionPreference.matches||!e.target.closest('button,summary,.badge,.maintainer-badge'))return;
+function showTerminalRipple(e,keyboard=false){
+ if(motionPreference.matches)return;
+ const target=e.target.closest('button,summary,.badge,.maintainer-badge,.release,.topbar a');if(!target)return;
+ const rect=target.getBoundingClientRect();
+ const x=keyboard?rect.left+rect.width/2:e.clientX;
+ const y=keyboard?rect.top+rect.height/2:e.clientY;
  const ripple=document.createElement('span');ripple.className='terminal-ripple';ripple.setAttribute('aria-hidden','true');
- ripple.style.left=e.clientX+'px';ripple.style.top=e.clientY+'px';document.body.append(ripple);
- ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});setTimeout(()=>ripple.remove(),800);
-});
+ ripple.style.left=x+'px';ripple.style.top=y+'px';document.body.append(ripple);
+ ripple.addEventListener('animationend',()=>ripple.remove(),{once:true});setTimeout(()=>ripple.remove(),1100);
+}
+// Capture the initial touch before navigation or UI replacement occurs.
+document.addEventListener('pointerdown',e=>showTerminalRipple(e),{capture:true,passive:true});
+document.addEventListener('click',e=>{if(e.detail===0)showTerminalRipple(e,true)},{capture:true});

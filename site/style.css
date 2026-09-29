@@ -62,3 +62,22 @@ details[open]>.branch{animation:terminal-reveal .3s ease both}
  @keyframes terminal-glitch{0%,100%{transform:none;text-shadow:none}25%{transform:translateX(-2px);text-shadow:3px 0 #b1ff25,-2px 0 #e0f26a}50%{transform:translateX(2px);text-shadow:-3px 0 #b1ff25}75%{transform:translateX(-1px)}}
  @keyframes terminal-ripple{to{transform:translate(-50%,-50%) scale(4);opacity:0}}
 }
+
+@media(prefers-reduced-motion:no-preference){
+ .terminal-ripple{width:24px;height:24px;border:2px solid var(--green);background:#b1ff2526;box-shadow:0 0 20px #b1ff2570,inset 0 0 12px #b1ff2530;animation:touch-ring .8s ease-out forwards}
+ @keyframes touch-ring{0%{transform:translate(-50%,-50%) scale(.5);opacity:1}35%{opacity:1}100%{transform:translate(-50%,-50%) scale(4);opacity:0}}
+ .tree details[open]>.branch{animation:tree-unfold .45s ease-out both}
+ @keyframes tree-unfold{from{opacity:0;transform:translateX(-10px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(0)}}
+ .tree summary{transition:color .2s,background .2s;min-height:44px}
+ .tree details[open]>summary{color:var(--green)}
+ .tree summary:before{transition:transform .25s;display:inline-block}.tree details[open]>summary:before{transform:rotate(180deg)}
+ .tree summary:active,.tree summary:focus-visible{background:#b1ff2515}
+ .release{animation:release-enter .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:.12s;transition:transform .2s,background .2s,box-shadow .2s}
+ .release:nth-of-type(2){animation-delay:.2s}.release:nth-of-type(3){animation-delay:.28s}
+ @keyframes release-enter{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+ .release:active{transform:scale(.97);background:#30491b;box-shadow:0 0 22px #b1ff2540}
+ .device-icon,.device-image{animation:device-online .9s ease-out both}
+ @keyframes device-online{0%{opacity:0;transform:scale(.85)}50%{opacity:1;filter:drop-shadow(0 0 12px #b1ff2560)}100%{transform:scale(1);filter:drop-shadow(0 0 3px #b1ff2520)}}
+ .tree-key{animation:terminal-reveal .45s ease both}.tree-key:nth-of-type(2){animation-delay:.08s}.tree-key:nth-of-type(3){animation-delay:.16s}.tree-key:nth-of-type(4){animation-delay:.24s}
+}
+@media(pointer:coarse) and (prefers-reduced-motion:no-preference){.terminal-ripple{width:32px;height:32px;border-width:3px}}
