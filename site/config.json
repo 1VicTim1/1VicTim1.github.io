@@ -1,5 +1,52 @@
 {
-  "profile": {"username":"1VicTim1","displayName":"VicTim","title":"Android ROM maintainer","organizations":["MoonL1ght-Team","crdroidandroid"]},
-  "github": {"trackedRepositories":["MoonL1ght-Team/android_device_xiaomi_fire_hos2","GADGETN1K/android_device_xiaomi_fire","GADGETN1K/android_device_xiaomi_fire-kernel"],"historyDays":365},
-  "devices":[{"name":"Redmi 12 4G","codename":"fire","image":null,"description":"Xiaomi · MediaTek Helio G88","android":[{"version":"16","families":[{"name":"crDroid","image":null,"releases":[{"version":"12.11","status":"official","downloadUrl":"https://crdroid.net/fire/12","note":"Версия и статус заданы вручную. Проверь актуальность перед публикацией."}]}]}]}]
+  "profile": {
+    "username": "1VicTim1",
+    "displayName": "VicTim",
+    "title": "Android ROM maintainer",
+    "organizations": [
+      "MoonL1ght-Team",
+      "crdroidandroid"
+    ]
+  },
+  "github": {
+    "trackedRepositories": [
+      "MoonL1ght-Team/android_device_xiaomi_fire_hos2",
+      "GADGETN1K/android_device_xiaomi_fire",
+      "GADGETN1K/android_device_xiaomi_fire-kernel"
+    ],
+    "historyDays": 365
+  },
+  "devices": [
+    {
+      "name": "Redmi 12 4G",
+      "codename": "fire",
+      "image": null,
+      "description": "Xiaomi · MediaTek Helio G88",
+      "android": [
+        {
+          "version": "16",
+          "families": [
+            {
+              "name": "crDroid",
+              "image": null,
+              "releases": [
+                {
+                  "version": "12.11",
+                  "status": "official",
+                  "downloadUrl": "https://crdroid.net/fire/12",
+                  "note": "Первая стабильная прошивка под Redmi 12"
+                },
+                {
+                  "version": "12.12",
+                  "status": "official",
+                  "downloadUrl": "https://crdroid.net/fire/12",
+                  "note": "Первая прошивка на базе 6.6 ядра для Redmi 12"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
